@@ -1,3 +1,5 @@
 # Summary
 
-* [First Chapter](chapter1.md)
+* [欢迎来到Haystack](README.md)
+* [Haystack入门](chapter1.md)
+
