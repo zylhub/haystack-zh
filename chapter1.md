@@ -1,4 +1,4 @@
-# haystack 入门教程
+# Haystack入门教程
 
 搜索是一个日益重要的话题。用户越来越依赖于搜索从噪声信息中分离和快速找到有用信息。此外，搜索搜索可以洞察那些东西是受欢迎的，改善网站上难以查找的东西。
 
@@ -141,3 +141,106 @@ class NoteIndex(indexes.SearchIndex, indexes.Indexable):
         """Used when the entire index for model is updated."""
         return self.get_model().objects.filter(pub_date__lte=datetime.datetime.now())
 ```
+每个`SerachIndex`需要有一个（仅有一个）一个字段`document=True`.这个指示着Haystack和搜索引擎把那个字段作为主要的检索。
+
+> 当你选择`document=True`字段时，它应该在你的`SearchIndex`类里面始终如一，以避免后端的混淆。一个便捷的命名是`text`。
+> 在所有的样例中这个`text`字段名并没有什么特殊。它也可以是其他任何命名，你可以叫它`pink_polka_dot`也是没有关系的。只是简单便利的交做`text`。
+
+另外，我们在`text`字段上提供了`use_template=True`。这允许我们使用一个数据模板（而不是容易出错的级联）来构建文档搜索引擎索引。你应该在模板目录下建立新的模板`search/indexes/myapp/note_text.txt`，并将下面内容放在里面。
+
+```
+{{ object.title }}
+{{ object.user.get_full_name }}
+{{ object.body }}
+```
+此外，我们增加了其他字段（`author`和`pub_date`）。当我们提供额外的过滤选项的时候这是很有用的。来至Haystack的多个`SearchField`类能处理大多数的数据。
+
+一个常见的主题是允许管理员用户在未来添加内容，而不马上在网站展示，直到未来某个时间点。我们特别自定义了`index_queryset`方法来防止未来的这些项添加到索引。
+
+## 设置视图
+
+### 添加`SearchView`到你的`URLconf`
+
+在你的`URLconf`中添加下面一行：
+
+    (r'^search/', include('haystack.urls')),
+    
+这会拉取Haystack的默认URLconf，它由单独指向`SearchView`实例的URLconf组成。你可以通过传递几个关键参数或者完全重新它来改变这个类的行为。
+
+### 搜索模板
+你的搜索模板(默认在`search/search.html`)将可能非常简单。下面的足够让你的搜索运行(你的`template/block`应该会不同)
+
+```html
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Search</h2>
+
+    <form method="get" action=".">
+        <table>
+            {{ form.as_table }}
+            <tr>
+                <td>&nbsp;</td>
+                <td>
+                    <input type="submit" value="Search">
+                </td>
+            </tr>
+        </table>
+
+        {% if query %}
+            <h3>Results</h3>
+
+            {% for result in page.object_list %}
+                <p>
+                    <a href="{{ result.object.get_absolute_url }}">{{ result.object.title }}</a>
+                </p>
+            {% empty %}
+                <p>No results found.</p>
+            {% endfor %}
+
+            {% if page.has_previous or page.has_next %}
+                <div>
+                    {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
+                    |
+                    {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
+                </div>
+            {% endif %}
+        {% else %}
+            {# Show some example queries to run, maybe query syntax, something else? #}
+        {% endif %}
+    </form>
+{% endblock %}
+```
+需要注意的是`page.object_list`实际上是`SearchResult`对象的列表。这些对象返回索引的所有数据。它们可以通过`{{result.object}}`来访问。所以`{{ result.object.title}}`实际使用的是数据库中`Note`对象来访问`title`字段的。
+
+### 重建索引
+
+这是最后一步，现在你已经配置好了所有的事情，是时候把数据库中的数据放入索引了。Haystack附带的一个命令行管理工具使它变得很容易。
+
+简单的运行`./manage.py rebuild_index`。你会得到有多少模型进行了处理并放进索引的统计。
+
+> 使用标准的`SearchIndex`。你的索引内容只在你运行`./manage.py update_index`或重新开始`./manage.py rebuild_index`更新。
+
+> 你应该把更新任务放在计划任务里面
+
+> 另外，如果你只是低流量或者你的搜索引擎能处理，`RealtimeSignalProcessor`自动为你处理更新或删除。
+
+### 完毕！
+
+现在可以访问的查询区域，输入一个查询，然后检索出结果了！恭喜你！
+
+### 下一步是什么？
+
+这个教程仅仅触及了Haystack的表面，`SearchQuerySet`是Haystack搜索的支柱为其提供强大功能。`QuerySet`就像api(参考[SearchQuerySet API](http://django-haystack.readthedocs.org/en/latest/searchqueryset_api.html#ref-searchqueryset-api)).你能使用更加复杂的`SearchForms/SearchViews`，给用户更好的[界面](http://django-haystack.readthedocs.org/en/latest/views_and_forms.html#ref-views-and-forms).和最佳实践提供了深入了解Haystack的不明显或高级用法.
+
+
+
+
+
+
+
+
+
+
+
+
