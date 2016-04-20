@@ -23,4 +23,12 @@ class Note(models.Model):
     def __unicode__(self):
         return self.title
 ```
+最后，在使用Haystack之前，你需要从选择一个搜索后端开始。这里有一个[安装搜索引擎](http://django-haystack.readthedocs.org/en/v2.4.1/installing_search_engines.html)的快速指南，稍后你会看到每一个引擎的官方说明。
 
+# 安装
+使用你最喜欢的Python包管理来从`PyPI`安装应用，例如。
+
+    pip install django-haystack
+    
+# 配置
+添加Haystack到`INSTALLED_APPS`
