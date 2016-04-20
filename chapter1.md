@@ -31,4 +31,113 @@ class Note(models.Model):
     pip install django-haystack
     
 # 配置
-添加Haystack到`INSTALLED_APPS`
+## 添加Haystack到`INSTALLED_APPS`
+
+正如大多数Django的应用一样，你应该在你的设置文件(通常是`settings.py`)添加Haystack到`INSTALLED_APPS`.
+示例：
+```py
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+
+    # Added.
+    'haystack',
+
+    # Then your usual apps...
+    'blog',
+]
+```
+## 修改你的`settings.py`
+在你的`settings.py`中，你需要添加一个设置来指示站点配置文件正在使用的后端，以及其它的后端设置。
+`HAYSTACK——CONNECTIONS`是必需的设置，并且应该至少是以下的一种：
+### Solr
+示例：
+```py
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+        'URL': 'http://127.0.0.1:8983/solr'
+        # ...or for multicore...
+        # 'URL': 'http://127.0.0.1:8983/solr/mysite',
+    },
+}
+```
+### Elasticsearch
+示例：
+```py
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': 'http://127.0.0.1:9200/',
+        'INDEX_NAME': 'haystack',
+    },
+}
+```
+### Whoosh
+需要设置`PATH`到你的Whoosh索引的文件系统位置。
+在你的网络服务器上保持关于权限的警告作为文档检索出来的应用。
+示例：
+```py
+import os
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+        'PATH': os.path.join(os.path.dirname(__file__), 'whoosh_index'),
+    },
+}
+```
+### Xapian
+首先安装Xapian后端（http://github.com/notanumber/xapian-haystack/tree/master）
+需要设置`PATH`到你的Xapian索引的文件系统位置。
+在你的网络服务器上保持关于权限的警告作为文档检索出来的应用。
+示例：
+```py
+import os
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'xapian_backend.XapianEngine',
+        'PATH': os.path.join(os.path.dirname(__file__), 'xapian_index'),
+    },
+}
+```
+### Simple
+`simple`后台使用数据库本身基本的匹配。不建议在生成中使用，但他会返回结果。
+```py
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
+    },
+}
+```
+
+# 处理数据
+## 创建`SearchIndexes`
+`SearchIndexes`对象是Haystack决定那些数据应该放入索引和处理流数据的方式。你可以把它们看作是Django的`Models`或`Forms`，它们是基于字段和数据操作/存储的。
+
+你通常为你期望索引的每一个`Model`都创建一个唯一的`SearchIndex`。虽然你可以在不同的model中重复使用相同的`SearchIndex`，只要你小心的做并且字段名很规范。
+
+为了建立`SearchIndex`，所有的都是`indexes.SearchIndex`和`indexe.Indexable`的子类。定义要存储数据的字段，定义`get_model`方法。
+
+我们会在下面创建和`Note`模型对应的`NoteIndex`。这个代码通常在`search_indexes.py`中。尽管这不是必须的。这使得Haystack能自动的检测到它。`NoteIndex`应该看起来像：
+
+```py
+import datetime
+from haystack import indexes
+from myapp.models import Note
+
+
+class NoteIndex(indexes.SearchIndex, indexes.Indexable):
+    text = indexes.CharField(document=True, use_template=True)
+    author = indexes.CharField(model_attr='user')
+    pub_date = indexes.DateTimeField(model_attr='pub_date')
+
+    def get_model(self):
+        return Note
+
+    def index_queryset(self, using=None):
+        """Used when the entire index for model is updated."""
+        return self.get_model().objects.filter(pub_date__lte=datetime.datetime.now())
+```
