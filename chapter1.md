@@ -141,3 +141,28 @@ class NoteIndex(indexes.SearchIndex, indexes.Indexable):
         """Used when the entire index for model is updated."""
         return self.get_model().objects.filter(pub_date__lte=datetime.datetime.now())
 ```
+每个`SerachIndex`需要有一个（仅有一个）一个字段`document=True`.这个指示着Haystack和搜索引擎把那个字段作为主要的检索。
+
+> 当你选择`document=True`字段时，它应该在你的`SearchIndex`类里面始终如一，以避免后端的混淆。一个便捷的命名是`text`。
+> 在所有的样例中这个`text`字段名并没有什么特殊。它也可以是其他任何命名，你可以叫它`pink_polka_dot`也是没有关系的。只是简单便利的交做`text`。
+
+另外，我们在`text`字段上提供了`use_template=True`。这允许我们使用一个数据模板（而不是容易出错的级联）来构建文档搜索引擎索引。你应该在模板目录下建立新的模板`search/indexes/myapp/note_text.txt`，并将下面内容放在里面。
+
+```
+{{ object.title }}
+{{ object.user.get_full_name }}
+{{ object.body }}
+```
+此外，我们增加了其他字段（`author`和`pub_date`）。当我们提供额外的过滤选项的时候这是很有用的。来至Haystack的多个`SearchField`类能处理大多数的数据。
+
+一个常见的主题是允许管理员用户在未来添加内容，而不马上在网站展示，直到未来某个时间点。我们特别自定义了`index_queryset`方法来防止未来的这些项添加到索引。
+
+## 设置视图
+
+### 添加`SearchView`到你的`URLconf`
+
+
+
+
+
+
