@@ -36,6 +36,8 @@
 比如你在`author`字段提供了`facet`,在索引中提供作者和文件数量的列表。这可能是呈现给用户的一个链接，让用户点击缩小原始的查询范围。
 
 
+---
+> [官方文档地址](http://django-haystack.readthedocs.org/en/latest/glossary.html)
 
 
 
