@@ -4,4 +4,5 @@
 * [Haystack入门](chapter1.md)
 * [术语表](glossary.md)
    * [术语表](zhu_yu_biao.md)
+* 术语表
 
