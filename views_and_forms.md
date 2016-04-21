@@ -76,3 +76,32 @@ class DateRangeSearchForm(SearchForm):
 
 ## Views(视图)
 
+`haystack.generic_views.SearchView`视图继承于Django标准的[FormView](https://docs.djangoproject.com/en/1.7/ref/class-based-views/generic-editing/#formview).示例视图能够使用任何基于django类视图修饰自定义，对于这个例子 在`get_queryset`中过滤检索结果。
+
+```py
+# views.py
+from datetime import date
+
+from haystack.generic_views import SearchView
+
+class MySearchView(SearchView):
+    """My custom search view."""
+
+    def get_queryset(self):
+        queryset = super(MySearchView, self).get_queryset()
+        # further filter queryset based on some set of criteria
+        return queryset.filter(pub_date__gte=date(2015, 1, 1))
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(MySearchView, self).get_context_data(*args, **kwargs)
+        # do something
+        return context
+
+# urls.py
+
+urlpatterns = patterns('',
+    url(r'^/search/?$', MySearchView.as_view(), name='search_view'),
+)
+```
+
+## Upgrading
