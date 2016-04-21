@@ -2,5 +2,5 @@
 
 * [欢迎来到Haystack](README.md)
 * [Haystack入门](chapter1.md)
-* [术语表](glossary.md)
+* [术语表1](glossary.md)
 
