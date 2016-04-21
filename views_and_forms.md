@@ -76,7 +76,7 @@ class DateRangeSearchForm(SearchForm):
 
 ## Views(视图)
 
-`haystack.generic_views.SearchView`视图继承于Django标准的[FormView](https://docs.djangoproject.com/en/1.7/ref/class-based-views/generic-editing/#formview).示例视图能够使用任何基于django类视图修饰自定义，对于这个例子 在`get_queryset`中过滤检索结果。
+`haystack.generic_views.SearchView`视图继承于Django标准的[FormView](https://docs.djangoproject.com/en/1.7/ref/class-based-views/generic-editing/#formview).示例视图能够使用任何基于django类视图修饰来自定义，对于这个例子 在`get_queryset`中过滤检索结果。
 
 ```py
 # views.py
@@ -104,4 +104,60 @@ urlpatterns = patterns('',
 )
 ```
 
-## Upgrading
+## Upgrading(升级)
+
+升级old-style视图到new-style视图，通常是简单的：
+
+1. 在`views.py`下创建一个`haystack.generic_views.SearchView`或者`haystack.generic_views.FacetedSearchView`的子类。
+2. 把old-style视图中的`urls.py`中的属性移动到你的新视图。这需要重命名`searchqueryset`到`queryset`和`template`到`template_name`
+3. 回顾你的模板用`page_object`替换`page`
+
+下面一个是例子：
+
+```py
+### old-style views...
+# urls.py
+
+sqs = SearchQuerySet().filter(author='john')
+
+urlpatterns = patterns('haystack.views',
+    url(r'^$', SearchView(
+        template='my/special/path/john_search.html',
+        searchqueryset=sqs,
+        form_class=SearchForm
+    ), name='haystack_search'),
+)
+
+### new-style views...
+# views.py
+
+class JohnSearchView(SearchView):
+    template_name = 'my/special/path/john_search.html'
+    queryset = SearchQuerySet().filter(author='john')
+    form_class = SearchForm
+
+# urls.py
+from myapp.views import JohnSearchView
+
+urlpatterns = patterns('',
+    url(r'^$', JohnSearchView.as_view(), name='haystack_search'),
+)
+```
+
+如果你重写了你的old-style方法，你需要重构这些方法使得等价于Django的通用视图。例如，如果你前面使用了`extra_context()`来添加模板或者预处理变量这些代码移到了`get_context_data`
+
+| Old Method | New Method |
+| -- | -- |
+| `extra_context()` | [get_context_data()](https://docs.djangoproject.com/en/1.7/ref/class-based-views/mixins-simple/#django.views.generic.base.ContextMixin.get_context_data) |
+| `create_response()` | [dispatch()](https://docs.djangoproject.com/en/1.7/ref/class-based-views/base/#django.views.generic.base.View.dispatch) 或者`get()` 和 `post()` |
+| `get_query()` | [get_queryset()](https://docs.djangoproject.com/en/1.7/ref/class-based-views/mixins-multiple-object/#django.views.generic.list.MultipleObjectMixin.get_queryset) |
+
+## Old-Style Views
+
+Haystack绑定了3中视图，类视图(`SearchView`和`FacetedSearchView`)和传统视图函数`basic_search`
+
+基于类的视图提供了易扩展的按需改变视图的方式。除了faceting情况下，`SearchView`可以同Haystack提供的其它forms交替工作。
+
+
+
+
