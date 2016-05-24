@@ -16,7 +16,11 @@ Haystack自带一些默认django-style的、简单视图和表单帮助你开始
 ## Forms(表单)
 `SearchForm`
 
-这是最基本的表单类型，这个表单由一个字段组成，`q`(表示查询)。一旦搜索，这个表单将清理`q`字段中的内容，并且表现的像`auto_query`在你自定义的`SearchQuerySet '或者默认`SearchQuerySet`一样。
+这是最基本的表单类型，这个表单由一个字段组成，`q`(表示查询)。一旦搜索，这个表单将得到干净`q`字段中的内容，并且表现的像`auto_query`在你自定义的`SearchQuerySet '或者默认`SearchQuerySet`一样。
+
+为了自定义`SearchQuerySet`，在你使用的`SearchQuerySet`中传入一个你要使用的`searchqueryset`参数。如果使用这个表单来关联一个`SearchView`，这个表单会在不需要任何额外工作的情况下，接受你提供给`SearchQuerySet`任何东西到视图。
+
+这个`SearchForm`同时接受一个`load_all`参数(`True` or `False`),
 
 
 ### Creating Your Own Form(创建你自己的表单)
