@@ -55,6 +55,34 @@ class NoteIndex(indexes.SearchIndex, indexes.Indexable):
  ```
 这将字段和索引挂钩(hook up),当更新`Model`对象时,拉取相关数据并索引存储做准备做预处理.
 
-### Field Options
+### Field Options(字段选择)
+
+#### `default`
+
+`SearchField.default`:当字段中没有查找到数据时提供一个具体的回退值。可以是一个值或是可调用的
+
+#### document
+
+`SearchField.document`:一个布尔型的标识指示哪个字段作为主要的搜索字段。默认是`False`
+
+#### indexed
+
+`SearchField.indexed`:从这个布尔型字段指示数据是否将在搜索的索引中。默认是`True`
+
+伴随着`stored`操作。
+
+#### index_fieldname
+
+`SearchField.index_fieldname`:这个选项允许你强制字段的索引名称。这不会改变haystack的参考字段。这在Solr的动态属性或者是整合扩展软件时很有用。
+
+变量是`SearchIndex`的内部字段变量名
+
+#### model_attr
+
+`SearchField.model_attr`:
+
+
+
+
 
 
