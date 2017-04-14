@@ -4,5 +4,6 @@
 * [Haystack入门](chapter1.md)
 * [术语表](chapter2.md)
 * [视图和表单](views_and_forms.md)
+* [Template Tags](template-tags.md)
 * [SearchField API](searchfield_api.md)
 
