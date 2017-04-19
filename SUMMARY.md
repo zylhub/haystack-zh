@@ -5,5 +5,6 @@
 * [术语表](chapter2.md)
 * [视图和表单](views_and_forms.md)
 * [Template Tags](template-tags.md)
+* [Management Commands](management-commands.md)
 * [SearchField API](searchfield_api.md)
 
