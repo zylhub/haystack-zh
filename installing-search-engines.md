@@ -86,3 +86,13 @@ class MySearchIndex(indexes.SearchIndex, indexes.Indexable):
 
 需要注意的是&lt;strname="field"&gt;suggestions&lt;/str&gt;对应于SearchIndex中的类（本示例中，我们假设主字段是text）
 
+## Elasticsearch
+
+官方下载地址：[http://www.elasticsearch.org/download/](http://www.elasticsearch.org/download/)
+
+> http://django-haystack.readthedocs.io/en/v2.6.0/installing\_search\_engines.html
+>
+> 未完待续....
+
+
+
