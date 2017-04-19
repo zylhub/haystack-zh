@@ -64,24 +64,25 @@ HAYSTACK_CONNECTIONS = {
 
 ENGINE选项是所有后端都要指定的。
 
-
-
 此外，每个后端都可能需要其他选项
 
 * Solr
+
   * URL：The URL to the Solr core.
 
 * Whoosh
+
   * `PATH`- The filesystem path to where the index data is located.
 
 * Xapian
+
   * `PATH`- The filesystem path to where the index data is located.
 
 以下选项是可选的：
 
 `INCLUDE_SPELLING`
 
-* - Include spelling suggestions. Default is`False`
+* * Include spelling suggestions. Default is`False`
 * `BATCH_SIZE`- How many records should be updated at once via the management commands. Default is`1000`
 * `TIMEOUT`- \(Solr and ElasticSearch\) How long to wait \(in seconds\) before the connection times out. Default is`10`
 * `STORAGE`- \(Whoosh-only\) Which storage engine to use. Accepts`file`or`ram`. Default is`file`
@@ -209,4 +210,50 @@ HAYSTACK_ID_FIELD = 'my_id'
 **Optional**
 
 此设置允许您控制Haystack内部使用的内容类型字段名称。很少需要，除非你的字段名与Haystack的默认值相冲突。
+
+示例：
+
+```
+HAYSTACK_DJANGO_CT_FIELD = 'my_django_ct'
+```
+
+默认是`django_ct`
+
+## `HAYSTACK_DJANGO_ID_FIELD`
+
+**Optional**
+
+词设置允许您控制Haystack内部使用的主键的字段名称。很少需要，除非你的字段名与Haystack的默认值相冲突。
+
+示例：
+
+```
+HAYSTACK_DJANGO_ID_FIELD = 'my_django_id'
+```
+
+默认是`django_id`
+
+## `HAYSTACK_IDENTIFIER_METHOD`
+
+**Optional**
+
+此设置允许您从`haystack.utils.get`_`identifier`提供自定义的方法。当`<`app.label&gt; &lt;objec\_name_&gt;&lt;pk&gt;的默认标识符模式不适合您的需要时有用。
+
+示例：
+
+```
+HAYSTACK_IDENTIFIER_METHOD = 'my_app.module.get_identifier'
+```
+
+默认是`haystack.utils.default_get_identifier`
+
+## `HAYSTACK_FUZZY_MIN_SIM`
+
+**Optional**
+
+此设置允许您在使用`fuzzy`时更改所需的相似性
+
+默认值是`0.5`
+
+
 
