@@ -8,5 +8,6 @@
 * [Management Commands](management-commands.md)
 * [Architecture Overview](architecture-overview.md)
 * [Backend Support](backend-support.md)
-* [SearchField API](searchfield_api.md)
+* [Installing Search Engines](installing-search-engines.md)
+* Installing Search Engines
 
