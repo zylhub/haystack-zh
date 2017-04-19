@@ -6,5 +6,6 @@
 * [视图和表单](views_and_forms.md)
 * [Template Tags](template-tags.md)
 * [Management Commands](management-commands.md)
+* [Architecture Overview](architecture-overview.md)
 * [SearchField API](searchfield_api.md)
 
