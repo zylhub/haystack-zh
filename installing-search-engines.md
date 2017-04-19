@@ -18,7 +18,7 @@ java -jar start.jar
 
 > note： `build_solr_schema使用 template来生成schema.xml.`Haystack使用一些明智的默认设置提供了默认模板。如果你想提供你自己的模板，你需要把它放在search\_configuration/solr.xml。在您的应用程序指定的目录中TEMPLATE\_DIRS。例如：
 >
-> ```
+> ```py
 > /myproj/myapp/templates/search_configuration/solr.xml
 > # ...or...
 > /myproj/templates/search_configuration/solr.xml
@@ -26,7 +26,7 @@ java -jar start.jar
 
 你需要pysolr。通过pypi可以下载，最佳版本是使用（2.1.0+）。将pysolr.py放到你的PYTHONPATH
 
-> note: pysolr有自己的依赖包，这并不在Haystack讨论的范围。请查阅：https://pypi.python.org/pypi/pysolr
+> note: pysolr有自己的依赖包，这并不在Haystack讨论的范围。请查阅：[https://pypi.python.org/pypi/pysolr](https://pypi.python.org/pypi/pysolr)
 
 ### More Like This
 
@@ -40,5 +40,49 @@ java -jar start.jar
 
 要在Haystack中启用拼写建议功能，您需要启用SpellCheckComponent
 
+首先需要使用SearchIndex类创建一个特殊的text字段，这里使用FacetCharField。这会使Solr的后处理失效，这可能会弄乱您的建议。示例如下：
 
+```py
+class MySearchIndex(indexes.SearchIndex, indexes.Indexable):
+    text = indexes.CharField(document=True, use_template=True)
+    # ... normal fields then...
+    suggestions = indexes.FacetCharField()
+
+    def prepare(self, obj):
+        prepared_data = super(MySearchIndex, self).prepare(obj)
+        prepared_data['suggestions'] = prepared_data['text']
+        return prepared_data
+```
+
+然后，您可以在Solr中添加以下行到`solrconfig.xml`中的`config`标签中
+
+```
+<searchComponent name="spellcheck" class="solr.SpellCheckComponent">
+
+    <str name="queryAnalyzerFieldType">textSpell</str>
+
+    <lst name="spellchecker">
+      <str name="name">default</str>
+      <str name="field">suggestions</str>
+      <str name="spellcheckIndexDir">./spellchecker1</str>
+      <str name="buildOnCommit">true</str>
+    </lst>
+</searchComponent>
+```
+
+然后更改您的默认处理程序
+
+```
+<requestHandler name="standard" class="solr.StandardRequestHandler" default="true" />
+```
+
+```
+<requestHandler name="standard" class="solr.StandardRequestHandler" default="true">
+    <arr name="last-components">
+        <str>spellcheck</str>
+    </arr>
+</requestHandler>
+```
+
+需要注意的是&lt;strname="field"&gt;suggestions&lt;/str&gt;对应于SearchIndex中的类（本示例中，我们假设主字段是text）
 
