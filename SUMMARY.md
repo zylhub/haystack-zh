@@ -7,5 +7,6 @@
 * [Template Tags](template-tags.md)
 * [Management Commands](management-commands.md)
 * [Architecture Overview](architecture-overview.md)
+* [Backend Support](backend-support.md)
 * [SearchField API](searchfield_api.md)
 
