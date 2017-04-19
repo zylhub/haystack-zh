@@ -90,7 +90,25 @@ class MySearchIndex(indexes.SearchIndex, indexes.Indexable):
 
 官方下载地址：[http://www.elasticsearch.org/download/](http://www.elasticsearch.org/download/)
 
-> http://django-haystack.readthedocs.io/en/v2.6.0/installing\_search\_engines.html
+Elasticsearch基于Java，除了JRE之外还需要少数几个包。它也非常优秀，容易扩展，并具有先进的功能集。Haystack当前只支持Elasticsearch1.x和2.x。5.x暂不支持。
+
+最佳的安装方式是采用包管理工具：
+
+```
+# On Mac OS X...
+brew install elasticsearch
+
+# On Ubuntu...
+apt-get install elasticsearch
+
+# Then start via:
+elasticsearch -f -D es.config=<path to YAML config>
+
+# Example:
+elasticsearch -f -D es.config=/usr/local/Cellar/elasticsearch/0.90.0/config/elasticsearch.yml
+```
+
+> [http://django-haystack.readthedocs.io/en/v2.6.0/installing\_search\_engines.html](http://django-haystack.readthedocs.io/en/v2.6.0/installing_search_engines.html)
 >
 > 未完待续....
 
