@@ -106,6 +106,28 @@ elasticsearch -f -D es.config=<path to YAML config>
 
 # Example:
 elasticsearch -f -D es.config=/usr/local/Cellar/elasticsearch/0.90.0/config/elasticsearch.yml
+
+```
+
+You may have to alter the configuration to run on`localhost`when developing locally. Modifications should be done in a YAML file, the stock one being`config/elasticsearch.yml`
+
+```
+
+# Unicast Discovery (disable multicast)
+discovery.zen.ping.multicast.enabled: false
+discovery.zen.ping.unicast.hosts: ["127.0.0.1"]
+
+# Name your cluster here to whatever.
+# My machine is called "Venus", so...
+cluster:
+  name: venus
+
+network:
+  host: 127.0.0.1
+
+path:
+  logs: /usr/local/var/log
+  data: /usr/local/var/data
 ```
 
 > [http://django-haystack.readthedocs.io/en/v2.6.0/installing\_search\_engines.html](http://django-haystack.readthedocs.io/en/v2.6.0/installing_search_engines.html)

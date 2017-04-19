@@ -9,5 +9,6 @@
 * [Architecture Overview](architecture-overview.md)
 * [Backend Support](backend-support.md)
 * [Installing Search Engines](installing-search-engines.md)
+* [Haystack Settings](haystack-settings.md)
 * [SearchField API](/searchqueryset-api.md#searchfield-api)
 
