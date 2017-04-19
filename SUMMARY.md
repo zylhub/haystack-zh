@@ -9,5 +9,5 @@
 * [Architecture Overview](architecture-overview.md)
 * [Backend Support](backend-support.md)
 * [Installing Search Engines](installing-search-engines.md)
-* [SearchQuerySet API](searchqueryset-api.md)
+* [SearchField API](/searchqueryset-api.md#searchfield-api)
 
