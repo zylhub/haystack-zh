@@ -9,5 +9,4 @@
 * [Architecture Overview](architecture-overview.md)
 * [Backend Support](backend-support.md)
 * [Installing Search Engines](installing-search-engines.md)
-* Installing Search Engines
 
