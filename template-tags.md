@@ -32,9 +32,24 @@ HTML标签默认使用span，highlighted 高亮显示的CSS类，默认截取200
 
 ## `more_like_this`
 
-从索引中获取类似的数据项，以查找与提供的检索内容相似的数据内容
+从索引中获取类似的数据项，以查找与提供的检索内容相似的数据内容。
 
 
 
+> Note: 要求搜索后端内置支持More Like方法
 
+示例
+
+```
+# Pull a full SearchQuerySet (lazy loaded) of similar content.
+{% more_like_this entry as related_content %}
+
+# Pull just the top 5 similar pieces of content.
+{% more_like_this entry as related_content limit 5  %}
+
+# Pull just the top 5 similar entries or comments.
+{% more_like_this entry as related_content for "blog.entry,comments.comment" limit 5  %}
+```
+
+这个标签的行为与SearchQuerySet.more\_like\_this完全相同，所以在这方面所有注释也适用于此。
 
