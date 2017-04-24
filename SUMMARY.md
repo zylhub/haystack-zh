@@ -10,5 +10,6 @@
 * [Backend Support](backend-support.md)
 * [Installing Search Engines](installing-search-engines.md)
 * [Haystack Settings](haystack-settings.md)
+* [Highlighting](highlighting.md)
 * [SearchField API](/searchqueryset-api.md#searchfield-api)
 
